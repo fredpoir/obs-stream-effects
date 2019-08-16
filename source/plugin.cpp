@@ -17,52 +17,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "plugin.h"
-#include "filter-blur.h"
-#include "filter-displacement.h"
-#include "filter-shape.h"
-#include "filter-transform.h"
+#include "plugin.hpp"
+#include "obs/obs-source-tracker.hpp"
 
-OBS_DECLARE_MODULE();
-OBS_MODULE_AUTHOR("Michael Fabian Dirks");
-OBS_MODULE_USE_DEFAULT_LOCALE("obs-stream-effects", "en-US");
+std::list<std::function<void()>> initializer_functions;
+std::list<std::function<void()>> finalizer_functions;
 
-Filter::Displacement *filterDisplacement;
-Filter::Shape *filterShape;
-Filter::Transform *filterTransform;
-
-std::list<std::function<void()>> initializerFunctions;
-std::list<std::function<void()>> finalizerFunctions;
-
-MODULE_EXPORT bool obs_module_load(void) {
-	for (auto func : initializerFunctions) {
+MODULE_EXPORT bool obs_module_load(void)
+{
+	P_LOG_INFO("Loading Version %u.%u.%u (Build %u)", PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR,
+			   PROJECT_VERSION_PATCH, PROJECT_VERSION_TWEAK);
+	obs::source_tracker::initialize();
+	for (auto func : initializer_functions) {
 		func();
 	}
 	return true;
 }
 
-MODULE_EXPORT void obs_module_unload(void) {
-	for (auto func : finalizerFunctions) {
+MODULE_EXPORT void obs_module_unload(void)
+{
+	P_LOG_INFO("Unloading Version %u.%u.%u (Build %u)", PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR,
+			   PROJECT_VERSION_PATCH, PROJECT_VERSION_TWEAK);
+	for (auto func : finalizer_functions) {
 		func();
 	}
-}
-
-MODULE_EXPORT const char* obs_module_name() {
-	return PLUGIN_NAME;
-}
-
-MODULE_EXPORT const char* obs_module_description() {
-	return PLUGIN_NAME;
+	obs::source_tracker::finalize();
 }
 
 #ifdef _WIN32
-#define NOMINMAX
-#define NOINOUT
-
+// Windows Only
+extern "C" {
 #include <windows.h>
+}
 
-BOOL WINAPI DllMain(HINSTANCE, DWORD, LPVOID) {
+BOOL WINAPI DllMain(HINSTANCE, DWORD, LPVOID)
+{
 	return TRUE;
 }
 #endif
-

@@ -1,46 +1,78 @@
-version: 0.4.2-{build}-{branch}
+# Generic Settings
+version: '{build}-{branch}'
 
-environment:
-  CURL_VERSION: 7.39.0
+matrix:
+  fast_finish: true
 
-pull_requests:
-  do_not_increment_build_number: true
-
-image:
-  - Visual Studio 2013
-  - Visual Studio 2015
-  - Visual Studio 2017
-
+# Build Image & Environment
 platform: x64
 
-install:
-  - curl -kL https://cdn.xaymar.com/obs/prebuilt/obs-studio-20.1.0.7z -f --retry 5 -o deps-obs.7z -z deps-obs.7z
-  - 7z x deps-obs.7z -odeps/obs
+image:
+  - Visual Studio 2017
 
-before_build:
-  - cmd: ci/make.bat
-  
-build_script:
-  - call msbuild /m /p:Configuration=RelWithDebInfo C:\projects\obs-stream-effects\build\32\install.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - call msbuild /m /p:Configuration=RelWithDebInfo C:\projects\obs-stream-effects\build\64\install.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - call msbuild /m /p:Configuration=RelWithDebInfo C:\projects\obs-stream-effects\build\64\PACKAGE_ZIP.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - call msbuild /m /p:Configuration=RelWithDebInfo C:\projects\obs-stream-effects\build\64\PACKAGE_7ZIP.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+environment:
+  CMAKE_SYSTEM_VERSION: 10.0.17134.0
+  PACKAGE_PREFIX: obs-stream-effects
+  INNOSETUP_URL: http://www.jrsoftware.org/download.php/is.exe
+  CURL_VERSION: 7.39.0
 
+# Resource Cache
 cache:
-  - deps-obs.7z
+  - inno.exe
+  - build/32/libobs-download
+  - build/32/libobs-src
+  - build/64/libobs-download
+  - build/64/libobs-src
 
+# Repository Settings
+branches:
+  except:
+    - /i18n_.*/
+    - /i18n_master/
+    - i18n_master
+    - /l10n_.*/
+    - /l10n_master/
+    - l10n_master
+
+# Building  
+install:
+- cmd: ci/appveyor-install.bat
+
+build_script:
+- cmd: node ci/builder.js
+
+after_build:
+- cmd: ci/appveyor-package.bat
+
+# Testing
+test: off
+
+# Artifacts
 artifacts:
-  - path: build/distrib/*.zip
-  - path: build/distrib/*.7z
+  - path: build/obs-stream-effects-*.zip
+  - path: build/obs-stream-effects-*.7z
+  - path: build/obs-stream-effects-*.exe
 
+# Deploying
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: QwBI/KNma7xeTcwQUGpTNSFaZU13Qv9UpiqUKHndJgAsh3aoRM8jnGUvCcg8aQIO
+    draft: true
+    prerelease: false
+    force_update: true
+    on:
+      appveyor_repo_tag: true
+
+# Notifications
 notifications:
   - provider: Webhook
     url: 
       secure: PTtt5ALhmK0q42jYyx4/Qa1Uf18+gLMXKGdzJjDISJt8IE/K0Zyp58UYmDDbbyLp4pBRf/Ylj8rn/zYL/mqBoDVRIH5zasPqIvBD0ZhtvNjTOxQ3QoRkAmxgpWeMowm3A3I1rLizA2H4EctPpoAJGrvQ1G2HEYn9tVsGYeetFTo=
-    on_build_success: true
-    on_build_failure: true
+    on_build_success: false
+    on_build_failure: false
     on_build_status_changed: true
     body: >-
       {
-        "content": "Build {{projectName}} {{buildVersion}} {{status}}: {{buildUrl}}\nCommit #{{commitId}} by {{commitAuthor}} on {{commitDate}}:\n{{commitMessage}}"
+        "content": "**Build {{status}}**: [{{commitId}}] {{commitMessage}}\nBy {{commitAuthor}} on {{commitDate}}\n{{buildUrl}}"
       }

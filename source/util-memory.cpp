@@ -17,21 +17,23 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "util-memory.h"
+#include "util-memory.hpp"
 #include <cstdlib>
+
 #define USE_STD_ALLOC_FREE
 
-void* util::malloc_aligned(size_t align, size_t size) {
+#ifdef _MSC_VER
+#define D_ALIGNED_ALLOC(a, s) _aligned_malloc(s, a)
+#define D_ALIGNED_FREE _aligned_free
+#else
+#define D_ALIGNED_ALLOC(a, s) aligned_alloc(s, a)
+#define D_ALIGNED_FREE free
+#endif
+
+void* util::malloc_aligned(size_t align, size_t size)
+{
 #ifdef USE_STD_ALLOC_FREE
-#if defined(_MSC_VER)
-#ifdef DEBUG
-	return _aligned_malloc_dbg(size, align);
-#else
-	return _aligned_malloc(size, align);
-#endif
-#else
-	return aligned_malloc(align, size);
-#endif
+	return D_ALIGNED_ALLOC(align, size);
 #else
 	// Ensure that we have space for the pointer and the data.
 	size_t asize = aligned_offset(align, size + (sizeof(void*) * 2));
@@ -50,17 +52,10 @@ void* util::malloc_aligned(size_t align, size_t size) {
 #endif
 }
 
-void util::free_aligned(void* mem) {
+void util::free_aligned(void* mem)
+{
 #ifdef USE_STD_ALLOC_FREE
-#if defined(_MSC_VER)
-#ifdef DEBUG
-	_aligned_free_dbg(mem);
-#else
-	_aligned_free(mem);
-#endif
-#else
-	free(mem);
-#endif
+	D_ALIGNED_FREE(mem);
 #else
 	void* ptr = reinterpret_cast<void*>(*reinterpret_cast<intptr_t*>(static_cast<char*>(mem) - sizeof(void*)));
 	free(ptr);

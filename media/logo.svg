@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="290.20709mm"
+   height="25.4508mm"
+   viewBox="0 0 290.2071 25.4508"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="logo.svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2812">
+      <stop
+         style="stop-color:#cccccc;stop-opacity:1;"
+         offset="0"
+         id="stop2808" />
+      <stop
+         style="stop-color:#999999;stop-opacity:1"
+         offset="1"
+         id="stop2810" />
+    </linearGradient>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter819"
+       inkscape:label="filter0"
+       x="-0.05"
+       y="-0.25"
+       width="1.1"
+       height="1.5">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="0.5"
+         result="mainBlur" />
+	  <!-- Build outer lightmap -->
+      <feOffset
+         in="mainBlur"
+         dx="0"
+         dy="-0.5"
+         result="offsetShadow" />
+      <feOffset
+         in="mainBlur"
+         dx="0"
+         dy="1.0"
+         result="offsetLight" />
+      <feComposite
+		 in="offsetShadow"
+         in2="SourceAlpha"
+         operator="out"
+         result="shadow" />
+	  <!-- Combining In with Out creates a destination-out -->
+	 <feFlood
+         flood-color="rgb(255,255,255)"
+         result="light" />
+      <feComposite
+		 in="light"
+		 in2="offsetLight"
+         result="light"
+         operator="in" />
+      <feComposite
+		 in="light"
+		 in2="SourceAlpha"
+         result="light"
+         operator="out" />
+		<!-- Blend Light and Shadow into one -->
+	  <feBlend
+		in2="shadow"
+	    in="light"
+		mode="lighten"
+		result="outerShadowLight"
+	   />
+	   <!-- Build inner drop shadow -->
+      <feOffset
+         in="mainBlur"
+         dx="0"
+         dy="1.5"
+         result="innerDropShadow" />
+      <feComposite
+         in="SourceAlpha"
+		 in2="innerDropShadow"
+         operator="out"
+         result="innerDropShadow" />
+	  <feGaussianBlur
+		in="innerDropShadow"
+		stdDeviation="0.5"
+		result="innerDropShadow"
+	  />
+		<feComposite
+			in="SourceAlpha"
+			in2="innerDropShadow"
+			operator="in"
+			result="innerDropShadow"
+		/>
+		<!-- Combine all Light maps -->
+		<feBlend
+			in="innerDropShadow"
+			in2="outerShadowLight"
+			mode="normal"
+			result="lightmap"
+		/>
+		<!-- Generate a thin smooth border -->
+		<feMorphology
+			in="SourceAlpha"
+			operator="erode"
+			radius="0.1"
+			result="border"
+		/>
+		<feComposite
+			in="SourceAlpha"
+			in2="border"
+			operator="out"
+			result="border"
+		/>
+		<!-- Blend everything with the original fill now -->
+		<feBlend
+			in="SourceGraphic"
+			in2="border"
+			mode="multiply"
+			result="final"
+		/>
+		<feBlend
+			in="final"
+			in2="lightmap"
+			mode="multiply"
+			result="final"
+		/>
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2812"
+       id="linearGradient2816"
+       x1="-10.059052"
+       y1="140.41412"
+       x2="-10.059052"
+       y2="148.98993"
+       gradientUnits="userSpaceOnUse"
+       spreadMethod="reflect" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="139.19025"
+     inkscape:cy="79.566038"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:measure-start="0,0"
+     inkscape:measure-end="0,0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="2880"
+     inkscape:window-height="1620"
+     inkscape:window-x="4106"
+     inkscape:window-y="267"
+     inkscape:window-maximized="0"
+     showborder="true" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(40.103548,-135.7746)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.39999962px;line-height:1.25;font-family:'Defcon Zero';-inkscape-font-specification:'Defcon Zero';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:url(#linearGradient2816);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter819)"
+       x="104.99405"
+       y="156.9836"
+       id="text817"><tspan
+         sodipodi:role="line"
+         id="tspan815"
+         x="104.99404"
+         y="156.9836"
+         style="font-size:25.39999962px;text-align:center;text-anchor:middle;fill:url(#linearGradient2816);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Stream Effects</tspan></text>
+  </g>
+</svg>

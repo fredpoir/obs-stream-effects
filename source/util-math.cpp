@@ -17,54 +17,82 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 
-#include "util-math.h"
-#include "util-memory.h"
-#include <malloc.h>
-#include <stdlib.h>
+#include "util-math.hpp"
 #include <cctype>
+#include <cstdlib>
+#include "util-memory.hpp"
 
-void* util::vec3a::operator new(size_t count) {
-	return _aligned_malloc(count, 16);
+void* util::vec2a::operator new(size_t count)
+{
+	return util::malloc_aligned(16, count);
 }
 
-void* util::vec3a::operator new[](size_t count) {
-	return _aligned_malloc(count, 16);
+void* util::vec2a::operator new[](size_t count)
+{
+	return util::malloc_aligned(16, count);
 }
 
-void util::vec3a::operator delete(void* p) {
-	_aligned_free(p);
+void util::vec2a::operator delete(void* p)
+{
+	util::free_aligned(p);
 }
 
-void util::vec3a::operator delete[](void* p) {
-	_aligned_free(p);
+void util::vec2a::operator delete[](void* p)
+{
+	util::free_aligned(p);
 }
 
-void* util::vec4a::operator new(size_t count) {
-	return _aligned_malloc(count, 16);
+void* util::vec3a::operator new(size_t count)
+{
+	return util::malloc_aligned(16, count);
 }
 
-void* util::vec4a::operator new[](size_t count) {
-	return _aligned_malloc(count, 16);
+void* util::vec3a::operator new[](size_t count)
+{
+	return util::malloc_aligned(16, count);
 }
 
-void util::vec4a::operator delete(void* p) {
-	_aligned_free(p);
+void util::vec3a::operator delete(void* p)
+{
+	util::free_aligned(p);
 }
 
-void util::vec4a::operator delete[](void* p) {
-	_aligned_free(p);
+void util::vec3a::operator delete[](void* p)
+{
+	util::free_aligned(p);
 }
 
-std::pair<int64_t, int64_t> util::SizeFromString(std::string text, bool allowSquare) {
+void* util::vec4a::operator new(size_t count)
+{
+	return util::malloc_aligned(16, count);
+}
+
+void* util::vec4a::operator new[](size_t count)
+{
+	return util::malloc_aligned(16, count);
+}
+
+void util::vec4a::operator delete(void* p)
+{
+	util::free_aligned(p);
+}
+
+void util::vec4a::operator delete[](void* p)
+{
+	util::free_aligned(p);
+}
+
+std::pair<int64_t, int64_t> util::size_from_string(std::string text, bool allowSquare)
+{
 	int64_t width, height;
 
 	const char* begin = text.c_str();
-	const char* end = text.c_str() + text.size() + 1;
-	char* here = const_cast<char*>(end);
+	const char* end   = text.c_str() + text.size() + 1;
+	char*       here  = const_cast<char*>(end);
 
 	long long res = strtoll(begin, &here, 0);
 	if (errno == ERANGE) {
-		return { 0, 0 };
+		return {0, 0};
 	}
 	width = res;
 
@@ -78,18 +106,18 @@ std::pair<int64_t, int64_t> util::SizeFromString(std::string text, bool allowSqu
 		// Are we allowed to return a square?
 		if (allowSquare) {
 			// Yes: Return width,width.
-			return { width, width };
+			return {width, width};
 		} else {
 			// No: Return width,0.
-			return { width, 0 };
+			return {width, 0};
 		}
 	}
 
 	res = strtoll(here, nullptr, 0);
 	if (errno == ERANGE) {
-		return { width, 0 };
+		return {width, 0};
 	}
 	height = res;
 
-	return { width, height };
+	return {width, height};
 }
